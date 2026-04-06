@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Centre de Pilotage des Projets & Portefeuille d’Infrastructures{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 En-tête PMO -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                🌍 Centre de Pilotage des Projets & Portefeuille d’Infrastructures
+            </h2>
+            <p class="text-muted mb-0">
+                Gouvernance en temps réel des projets structurants, contrôle budgétaire,
+                suivi des jalons, maîtrise des risques et intelligence d’exécution.
+            </p>
+            <small class="text-muted">
+                Dernière mise à jour : {{ updated_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('projects.export_projects') }}"
+               class="btn btn-outline-primary px-4">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exporter le portefeuille
+            </a>
+
+            <button class="btn btn-success px-4">
+                <i class="bi bi-plus-circle me-2"></i>Nouveau programme
+            </button>
+
+            <button class="btn btn-outline-dark px-4">
+                <i class="bi bi-diagram-3 me-2"></i>Vue portefeuille
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 KPI portefeuille -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="text-primary fw-bold">{{ projects|length }}</h3>
+                <p class="mb-0 text-muted">Programmes actifs</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="text-success fw-bold">78%</h3>
+                <p class="mb-0 text-muted">Avancement portefeuille</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="text-warning fw-bold">
+                    {{ projects | selectattr("statut", "equalto", "Retard") | list | length }}
+                </h3>
+                <p class="mb-0 text-muted">Risques planning</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="text-info fw-bold">1,2 Md</h3>
+                <p class="mb-0 text-muted">CAPEX engagé</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔍 Recherche -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <input id="projectSearch"
+                   type="text"
+                   class="form-control rounded-pill px-4"
+                   placeholder="🔍 Rechercher projet, zone, entreprise...">
+        </div>
+    </div>
+
+    <!-- 🏗️ Cartes projets -->
+    <div class="row g-4" id="projectCards">
+        {% for project in projects %}
+        <div class="col-md-6 col-xl-4 project-card">
+            <div class="card h-100 shadow-sm border-0 rounded-4 hover-card">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold mb-0">{{ project.nom }}</h5>
+
+                        {% if project.avancement >= 80 %}
+                            <span class="badge bg-success rounded-pill">Dans les délais</span>
+                        {% elif project.avancement >= 50 %}
+                            <span class="badge bg-warning text-dark rounded-pill">Sous surveillance</span>
+                        {% else %}
+                            <span class="badge bg-danger rounded-pill">Critique</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="mb-2"><strong>💰 Budget :</strong> {{ project.budget }}</p>
+                    <p class="mb-2"><strong>📍 Zone :</strong> {{ project.zone }}</p>
+                    <p class="mb-2"><strong>👷 Entreprise :</strong> {{ project.entreprise }}</p>
+                    <p class="mb-3"><strong>📅 Échéance :</strong> {{ project.deadline }}</p>
+                    <p class="mb-3"><strong>📌 Statut :</strong> {{ project.statut }}</p>
+
+                    <div class="mb-2 d-flex justify-content-between">
+                        <small class="text-muted">Progression d’exécution</small>
+                        <small class="fw-bold">{{ project.avancement }}%</small>
+                    </div>
+
+                    <div class="progress rounded-pill" style="height: 12px;">
+                        <div class="progress-bar
+                            {% if project.avancement >= 80 %}bg-success
+                            {% elif project.avancement >= 50 %}bg-warning
+                            {% else %}bg-danger{% endif %}"
+                            role="progressbar"
+                            style="width: {{ project.avancement }}%;">
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}"
+                           class="btn btn-outline-primary btn-sm flex-fill">
+                            👁️ Voir
+                        </a>
+
+                        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}"
+                           class="btn btn-primary btn-sm flex-fill">
+                            ✏️ Piloter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 🧠 Signaux PMO -->
+    <div class="card mt-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">🧠 Signaux d’intelligence portefeuille</h4>
+
+            {% for project in projects %}
+            <a href="{{ url_for('projects.project_detail', project_id=project.id) }}"
+               class="text-decoration-none">
+                <div class="alert
+                    {% if project.statut == 'Retard' %}
+                        alert-warning
+                    {% elif project.avancement >= 80 %}
+                        alert-success
+                    {% else %}
+                        alert-info
+                    {% endif %}">
+                    <strong>{{ project.nom }}</strong>
+                    • {{ project.zone }}
+                    • {{ project.avancement }}%
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const search = document.getElementById("projectSearch");
+    const cards = document.querySelectorAll(".project-card");
+
+    search.addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+
+        cards.forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(value)
+                ? ""
+                : "none";
+        });
+    });
+});
+</script>
+{% endblock %}

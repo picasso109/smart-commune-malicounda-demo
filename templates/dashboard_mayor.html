@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+
+{% block title %}Centre de Commandement Exécutif – Malicounda{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 En-tête exécutif -->
+    <div class="dashboard-hero d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold text-primary mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-broadcast-pin"></i>
+                Centre de Commandement Exécutif
+            </h1>
+            <p class="text-muted mb-1">
+                Intelligence territoriale unifiée pour les finances, le foncier,
+                les services citoyens, la résilience et les projets structurants.
+            </p>
+            <small class="text-muted">
+                Dernière mise à jour : {{ stats.updated_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="btn btn-success px-4 shadow-sm rounded-pill">
+                <i class="bi bi-phone-fill me-2"></i>Installer PWA
+            </a>
+
+            <a href="{{ url_for('dashboard.dashboard_kpis_page') }}"
+               class="btn btn-outline-primary px-4 rounded-pill">
+                <i class="bi bi-graph-up-arrow me-2"></i>KPI Exécutifs
+            </a>
+
+            <a href="{{ url_for('reports.mayor_report') }}"
+               class="btn btn-outline-dark px-4 rounded-pill">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Rapport PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- 📊 KPI principaux -->
+    <div class="row g-4">
+        <div class="col-12 col-md-6 col-xxl-3">
+            <a href="{{ url_for('finance.finance') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card stat-card border-0">
+                    <div class="card-body">
+                        <small class="text-muted">💵 Recettes communales</small>
+                        <h2 class="fw-bold text-success mt-2">{{ stats.recettes }}</h2>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-success">+12% mensuel</small>
+                            <small class="text-muted">Objectif 95%</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xxl-3">
+            <a href="{{ url_for('stats.analytics_dashboard') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card stat-card border-0">
+                    <div class="card-body">
+                        <small class="text-muted">📈 Projection de croissance</small>
+                        <h2 class="fw-bold text-primary mt-2">{{ stats.projection }}</h2>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-primary">Prévision IA</small>
+                            <small class="text-muted">Exercice 2026</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xxl-3">
+            <a href="{{ url_for('foncier.accueil_foncier') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card stat-card border-0">
+                    <div class="card-body">
+                        <small class="text-muted">🗺️ Registre foncier</small>
+                        <h2 class="fw-bold text-info mt-2">{{ stats.parcelles }}</h2>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-info">Cadastre synchronisé</small>
+                            <small class="text-muted">SIG activé</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xxl-3">
+            <a href="{{ url_for('incidents.incidents') }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card stat-card border-0">
+                    <div class="card-body">
+                        <small class="text-muted">⚠️ Litiges</small>
+                        <h2 class="fw-bold text-danger mt-2">{{ stats.litiges }}</h2>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-danger">Réponse prioritaire</small>
+                            <small class="text-muted">SLA 24h</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 🚨 Alertes + Carte -->
+    <div class="row g-4 mt-1">
+        <div class="col-xl-8">
+            <div class="card h-100 shadow-sm border-0 section-card">
+                <div class="card-body">
+                    <h4 class="mb-3">🗺️ Géointelligence & zones à risque</h4>
+                    <div id="map" class="map-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card h-100 shadow-sm border-0 section-card">
+                <div class="card-body">
+                    <h4 class="mb-3">🚨 Chronologie des alertes</h4>
+
+                    {% if incidents %}
+                        {% for incident in incidents %}
+                        <a href="{{ url_for('incidents.incidents') }}"
+                           class="text-decoration-none">
+                            <div class="alert alert-{% if incident.niveau == 'critique' %}danger{% elif incident.niveau == 'moyen' %}warning{% else %}success{% endif %}">
+                                {{ incident.zone }} • {{ incident.message }}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-success">
+                            Aucun incident critique détecté actuellement.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Revenus + Projets -->
+    <div class="row g-4 mt-1">
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0 section-card">
+                <div class="card-body">
+                    <h4 class="mb-3">📊 Tendance des recettes</h4>
+                    <canvas id="financeChart" height="110"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 section-card">
+                <div class="card-body">
+                    <h4 class="mb-3">🏗️ Projets stratégiques</h4>
+
+                    {% if projects %}
+                        {% for project in projects %}
+                        <a href="{{ url_for('projects.projects') }}"
+                           class="text-decoration-none text-dark">
+                            <p class="mb-2 fw-semibold">{{ project.nom }}</p>
+                            <div class="progress mb-3" style="height: 10px;">
+                                <div class="progress-bar bg-primary"
+                                     style="width: {{ project.progress }}%"></div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Aucun projet actif.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.dashboard-hero{
+    background: linear-gradient(135deg, rgba(13,110,253,.06), rgba(25,135,84,.04));
+    border-radius: 22px;
+    padding: 22px;
+}
+
+.hover-card {
+    transition: all 0.25s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+
+.stat-card{
+    border-radius: 22px;
+}
+
+.section-card{
+    border-radius: 22px;
+}
+
+.map-box{
+    height: 540px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 🗺️ Carte Malicounda
+    const mapContainer = document.getElementById("map");
+    if (mapContainer && typeof L !== "undefined") {
+        const map = L.map("map").setView([14.4719, -16.9464], 11);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap"
+        }).addTo(map);
+
+        L.marker([14.4719, -16.9464])
+            .addTo(map)
+            .bindPopup("📍 Commune de Malicounda")
+            .openPopup();
+    }
+
+    // 📊 Graphique recettes
+    const ctx = document.getElementById("financeChart");
+    if (!ctx || typeof Chart === "undefined") return;
+
+    fetch("{{ url_for('dashboard.dashboard_kpis') }}")
+        .then(response => response.json())
+        .then(data => {
+            if (window.financeChartInstance) {
+                window.financeChartInstance.destroy();
+            }
+
+            window.financeChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
+                    datasets: [{
+                        label: "Tendance des recettes",
+                        data: data.monthly_revenue || [65, 72, 78, 80, 85, 87],
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.log("Erreur KPI:", error));
+});
+</script>
+{% endblock %}

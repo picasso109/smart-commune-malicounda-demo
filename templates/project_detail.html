@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.nom }} – Smart Commune{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                🏗️ {{ project.nom }}
+            </h2>
+            <p class="text-muted mb-0">
+                Détail complet du projet d’infrastructure
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('projects.projects') }}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Retour portefeuille
+            </a>
+
+            <a href="{{ url_for('projects.export_projects') }}"
+               class="btn btn-outline-dark">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Exporter
+            </a>
+        </div>
+    </div>
+
+    <!-- 📊 KPI -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-success">{{ project.avancement }}%</h3>
+                <p class="mb-0 text-muted">Avancement</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-primary">{{ project.budget }}</h3>
+                <p class="mb-0 text-muted">Budget</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-warning">{{ project.deadline }}</h3>
+                <p class="mb-0 text-muted">Échéance</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-info">{{ project.zone }}</h3>
+                <p class="mb-0 text-muted">Zone</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 Project Governance -->
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">📋 Fiche de gouvernance</h4>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">📌 Projet</small>
+                        <h5 class="mb-0">{{ project.nom }}</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">💰 Budget</small>
+                        <h5 class="mb-0">{{ project.budget }}</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">🚦 Statut</small>
+                        <h5 class="mb-0">{{ project.statut }}</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">🏢 Entreprise</small>
+                        <h5 class="mb-0">{{ project.entreprise }}</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">📍 Zone</small>
+                        <h5 class="mb-0">{{ project.zone }}</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <small class="text-muted">📅 Deadline</small>
+                        <h5 class="mb-0">{{ project.deadline }}</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <small class="text-muted">Progression d’exécution</small>
+                    <small class="fw-bold">{{ project.avancement }}%</small>
+                </div>
+
+                <div class="progress rounded-pill" style="height: 14px;">
+                    <div class="progress-bar
+                        {% if project.avancement >= 80 %}bg-success
+                        {% elif project.avancement >= 50 %}bg-warning
+                        {% else %}bg-danger{% endif %}"
+                        role="progressbar"
+                        style="width: {{ project.avancement }}%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧠 Smart signal -->
+    <div class="card mt-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">🧠 Signal stratégique</h4>
+
+            {% if project.avancement >= 80 %}
+                <div class="alert alert-success">
+                    Projet presque livré avec faible risque d’exécution.
+                </div>
+            {% elif project.avancement >= 50 %}
+                <div class="alert alert-warning">
+                    Projet sous contrôle mais nécessite un suivi rapproché.
+                </div>
+            {% else %}
+                <div class="alert alert-danger">
+                    Projet en retard critique nécessitant arbitrage PMO immédiat.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

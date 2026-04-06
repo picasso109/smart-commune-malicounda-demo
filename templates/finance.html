@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Trésorerie & Intelligence des Recettes – Smart Commune{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 En-tête -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                💎 Centre de Trésorerie & Intelligence des Recettes
+            </h2>
+            <p class="text-muted mb-0">
+                Pilotage intelligent des finances communales, suivi des recettes
+                et projections budgétaires pour Malicounda.
+            </p>
+            <small class="text-muted">
+                Dernière synchronisation : {{ finances.updated_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="/finances/export" class="btn btn-outline-primary px-4">
+                <i class="bi bi-download me-2"></i>Exporter le pack
+            </a>
+            <button class="btn btn-success px-4">
+                <i class="bi bi-stars me-2"></i>Prévision IA
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 KPI -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-md-6 col-xl-3">
+            <a href="/finances/revenue/1" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body">
+                        <small class="text-muted">🏠 Taxes foncières</small>
+                        <h2 class="fw-bold text-primary mt-2">
+                            {{ finances.taxes_foncieres }}
+                        </h2>
+                        <small class="text-success">+8% ce mois</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <a href="/finances/revenue/2" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body">
+                        <small class="text-muted">🛒 Revenus des marchés</small>
+                        <h2 class="fw-bold text-success mt-2">
+                            {{ finances.marches }}
+                        </h2>
+                        <small class="text-success">Stabilité forte</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <a href="/finances/revenue/3" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body">
+                        <small class="text-muted">🏖️ Revenus touristiques</small>
+                        <h2 class="fw-bold text-info mt-2">
+                            {{ finances.tourisme }}
+                        </h2>
+                        <small class="text-info">Pointe Sarène</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body">
+                    <small class="text-muted">📈 Projection fiscale</small>
+                    <h2 class="fw-bold text-warning mt-2">
+                        {{ finances.projection }}
+                    </h2>
+                    <small class="text-warning">Prévision 2026</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 Tableau + Graph -->
+    <div class="row g-4">
+
+        <!-- 📋 Tableau -->
+        <div class="col-xl-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="mb-3">📋 Tableau de vérification des recettes</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Zone</th>
+                                    <th>Montant</th>
+                                    <th>Conformité</th>
+                                    <th>Détail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for revenue in revenues %}
+                                <tr>
+                                    <td>{{ revenue.module }}</td>
+                                    <td>{{ revenue.zone }}</td>
+                                    <td>{{ revenue.montant }}</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            {{ revenue.compliance }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/finances/revenue/{{ revenue.id }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Ouvrir
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📊 Graph -->
+        <div class="col-xl-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="mb-3">📊 Tendance mensuelle</h4>
+                    <canvas id="financeChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/finances/api/trend")
+        .then(response => response.json())
+        .then(data => {
+            new Chart(document.getElementById("financeChart"), {
+                type: "line",
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: "Croissance des recettes",
+                        data: data.values,
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}

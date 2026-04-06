@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion foncière & intelligence cadastrale – Malicounda{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 En-tête -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                🌍 Centre de gouvernance foncière & cadastre intelligent
+            </h2>
+            <p class="text-muted mb-0">
+                Gestion en temps réel des parcelles, suivi juridique, traçabilité QR,
+                prévention des litiges et synchronisation SIG.
+            </p>
+            <small class="text-muted">
+                Dernière synchronisation : {{ mis_a_jour }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('foncier.exporter_cadastre') }}" class="btn btn-outline-primary px-4">
+                <i class="bi bi-download me-2"></i>Exporter le cadastre
+            </a>
+            <button class="btn btn-success px-4">
+                <i class="bi bi-plus-circle me-2"></i>Nouvelle parcelle
+            </button>
+            <button class="btn btn-outline-dark px-4">
+                <i class="bi bi-globe2 me-2"></i>Synchronisation SIG
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 KPI -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="fw-bold text-primary">{{ parcelles|length }}</h3>
+                    <small class="text-muted">Parcelles suivies</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="fw-bold text-success">85%</h3>
+                    <small class="text-muted">Patrimoine régularisé</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="fw-bold text-danger">
+                        {{ parcelles | selectattr("statut", "equalto", "Litige") | list | length }}
+                    </h3>
+                    <small class="text-muted">Litiges actifs</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="fw-bold text-info">+21%</h3>
+                    <small class="text-muted">Valorisation foncière</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🗺️ SIG + TABLEAU -->
+    <div class="row g-4">
+        <div class="col-xl-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3">🛰️ Zones stratégiques SIG</h4>
+                    <div id="map"
+                         class="rounded-4"
+                         style="height: 420px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📋 TABLEAU -->
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <h4 class="mb-0">📋 Registre intelligent des parcelles</h4>
+                        <input id="parcelSearch"
+                               type="text"
+                               class="form-control w-auto rounded-pill px-3"
+                               placeholder="🔍 Rechercher une parcelle, zone...">
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover" id="parcelTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID Parcelle</th>
+                                    <th>Zone</th>
+                                    <th>Statut</th>
+                                    <th>Superficie</th>
+                                    <th>QR</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for parcelle in parcelles %}
+                                <tr>
+                                    <td class="fw-bold">{{ parcelle.id }}</td>
+                                    <td>{{ parcelle.zone }}</td>
+
+                                    <td>
+                                        {% if parcelle.statut == "Sécurisée" %}
+                                            <span class="badge bg-success rounded-pill px-3">
+                                                {{ parcelle.statut }}
+                                            </span>
+                                        {% elif parcelle.statut == "Disponible" %}
+                                            <span class="badge bg-primary rounded-pill px-3">
+                                                {{ parcelle.statut }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger rounded-pill px-3">
+                                                {{ parcelle.statut }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ parcelle.superficie }} m²</td>
+
+                                    <td>
+                                        <a href="{{ url_for('qr.generate_qr', module='parcelle', doc_id=parcelle.id) }}"
+                                           target="_blank"
+                                           class="btn btn-sm btn-success">
+                                            🔳 Vérifier QR
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <a href="{{ url_for('foncier.detail_parcelle', identifiant=parcelle.id) }}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                👁️ Voir
+                                            </a>
+                                            <button class="btn btn-sm btn-primary">
+                                                ✏️ Modifier
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-dark">
+                                                🛰️ SIG
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🚨 RISQUES -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-3">🚨 Signaux de risque & opportunités</h4>
+
+            {% for parcelle in parcelles %}
+            <a href="{{ url_for('foncier.detail_parcelle', identifiant=parcelle.id) }}"
+               class="text-decoration-none">
+                <div class="alert {% if parcelle.statut == 'Litige' %}alert-danger{% elif parcelle.statut == 'Disponible' %}alert-info{% else %}alert-success{% endif %}">
+                    <strong>{{ parcelle.zone }}</strong> • {{ parcelle.statut }} • {{ parcelle.valeur }} FCFA
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 🔍 recherche tableau
+    const search = document.getElementById("parcelSearch");
+    const table = document.getElementById("parcelTable");
+
+    if (search && table) {
+        const rows = table.querySelectorAll("tbody tr");
+
+        search.addEventListener("keyup", function () {
+            const value = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(value)
+                    ? ""
+                    : "none";
+            });
+        });
+    }
+
+    // 🗺️ carte Leaflet Malicounda
+    if (typeof L !== "undefined") {
+        const map = L.map("map").setView([14.47189, -16.94645], 11);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap"
+        }).addTo(map);
+
+        {% for parcelle in parcelles %}
+        L.marker([{{ parcelle.latitude }}, {{ parcelle.longitude }}])
+            .addTo(map)
+            .bindPopup("📍 {{ parcelle.id }} • {{ parcelle.zone }}");
+        {% endfor %}
+    }
+});
+</script>
+{% endblock %}

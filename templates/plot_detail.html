@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Parcelle {{ parcelle.id }} – Détail cadastral premium{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 Header premium -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold text-primary mb-1">
+                🗺️ Parcelle {{ parcelle.id }}
+            </h1>
+            <p class="text-muted mb-0">
+                Fiche cadastrale premium avec géolocalisation, traçabilité QR,
+                historique foncier et export PDF sécurisé.
+            </p>
+            <small class="text-muted">
+                Commune de Malicounda • Dossier synchronisé en temps réel
+            </small>
+        </div>
+
+        <div>
+            <span class="badge rounded-pill px-4 py-2 fs-6
+                {% if parcelle.statut == 'Sécurisée' %}
+                    bg-success
+                {% elif parcelle.statut == 'Litige' %}
+                    bg-danger
+                {% else %}
+                    bg-primary
+                {% endif %}
+            ">
+                {{ parcelle.statut or "Disponible" }}
+            </span>
+        </div>
+    </div>
+
+    <!-- 📊 KPI GRID -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100 hover-card border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">👤 Propriétaire</small>
+                    <h5 class="fw-bold mt-2">{{ parcelle.proprietaire }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100 hover-card border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">📍 Zone</small>
+                    <h5 class="fw-bold mt-2">{{ parcelle.zone }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100 hover-card border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">📐 Superficie</small>
+                    <h5 class="fw-bold mt-2">{{ parcelle.superficie }} m²</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100 hover-card border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">💰 Valeur estimée</small>
+                    <h5 class="fw-bold mt-2 text-success">
+                        {{ "{:,.0f}".format(parcelle.valeur).replace(",", " ") }} FCFA
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🗺️ MAP + DOSSIER -->
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h4 class="mb-3">🛰️ Carte SIG & limites officielles</h4>
+                    <div id="carte" style="height: 560px; border-radius: 20px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h4 class="mb-3">📜 Historique foncier</h4>
+                    <div class="alert alert-light border">
+                        {{ parcelle.historique or "Aucun historique disponible." }}
+                    </div>
+
+                    <h5 class="mt-4 mb-3">📍 Coordonnées GPS</h5>
+                    <div class="bg-light rounded-4 p-3">
+                        <small>Latitude</small>
+                        <div class="fw-bold">{{ parcelle.latitude }}</div>
+                        <small class="mt-2 d-block">Longitude</small>
+                        <div class="fw-bold">{{ parcelle.longitude }}</div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">🔐 QR sécurisé</h5>
+                    <div id="qrcode"
+                         class="bg-light rounded-4 p-3 d-flex justify-content-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 ACTIONS -->
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-body d-flex gap-3 flex-wrap">
+            <button class="btn btn-primary px-4" onclick="telechargerPDF()">
+                📄 Export PDF
+            </button>
+
+            <a href="{{ url_for('foncier.accueil_foncier') }}"
+               class="btn btn-outline-secondary px-4">
+                ⬅ Retour au foncier
+            </a>
+
+            <a href="/qr/parcelle/{{ parcelle.id }}"
+               target="_blank"
+               class="btn btn-success px-4">
+                🔳 Vérifier QR
+            </a>
+
+            <button class="btn btn-outline-dark px-4" onclick="window.print()">
+                🖨️ Imprimer
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all .25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+<!-- ✅ LIBS MANQUANTES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const latitude = {{ parcelle.latitude }};
+    const longitude = {{ parcelle.longitude }};
+    const limites = {{ parcelle.limites | tojson }};
+
+    // 🗺️ Leaflet map
+    const carte = L.map("carte").setView([latitude, longitude], 19);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 22,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(carte);
+
+    L.marker([latitude, longitude])
+        .addTo(carte)
+        .bindPopup("📍 {{ parcelle.zone }} - {{ parcelle.id }}")
+        .openPopup();
+
+    const polygone = L.polygon(limites, {
+        color: "#0d6efd",
+        fillColor: "#0d6efd",
+        fillOpacity: 0.30,
+        weight: 3
+    }).addTo(carte);
+
+    carte.fitBounds(polygone.getBounds());
+
+    // 🔐 QR Code
+    QRCode.toCanvas(
+        document.createElement("canvas"),
+        window.location.href,
+        function (err, canvas) {
+            if (!err) {
+                document.getElementById("qrcode").appendChild(canvas);
+            }
+        }
+    );
+});
+
+// 📄 PDF export premium
+function telechargerPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Titre Foncier - {{ parcelle.id }}", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text("Zone : {{ parcelle.zone }}", 20, 40);
+    doc.text("Propriétaire : {{ parcelle.proprietaire }}", 20, 50);
+    doc.text("Superficie : {{ parcelle.superficie }} m²", 20, 60);
+    doc.text("Valeur : {{ parcelle.valeur }} FCFA", 20, 70);
+    doc.text("Latitude : {{ parcelle.latitude }}", 20, 80);
+    doc.text("Longitude : {{ parcelle.longitude }}", 20, 90);
+    doc.text("Historique : {{ parcelle.historique }}", 20, 105);
+
+    doc.save("titre_foncier_{{ parcelle.id }}.pdf");
+}
+</script>
+{% endblock %}

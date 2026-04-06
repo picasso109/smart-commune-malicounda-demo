@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Urban Intelligence & Performance Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 Intelligence Header -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                🌍 Urban Intelligence & Performance Analytics Hub
+            </h2>
+            <p class="text-muted mb-0">
+                Cross-domain policy intelligence across finance, land governance,
+                infrastructure delivery and citizen service performance.
+            </p>
+            <small class="text-muted">
+                Last update: {{ updated_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('stats.export_policy_brief') }}"
+               class="btn btn-success px-4">
+                📈 Generate Policy Brief
+            </a>
+
+            <button class="btn btn-outline-primary px-4">
+                🧠 AI Scenario
+            </button>
+
+            <button class="btn btn-outline-dark px-4">
+                🌐 Donor Pack
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 Core KPI Matrix -->
+    <div class="row g-4">
+
+        <div class="col-md-6 col-xl-3">
+            <a href="{{ url_for('finance.finance') }}" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                    <small class="text-muted">💰 Revenue Growth</small>
+                    <h2 class="text-success fw-bold mt-2">{{ analytics.croissance_recettes }}</h2>
+                    <small class="text-success">Fiscal acceleration</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <a href="{{ url_for('foncier.accueil_foncier') }}" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                    <small class="text-muted">⚖️ Legal Cases Resolved</small>
+                    <h2 class="text-primary fw-bold mt-2">{{ analytics.litiges_resolus }}</h2>
+                    <small class="text-primary">Governance compliance</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <a href="{{ url_for('projects.projects') }}" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                    <small class="text-muted">🏗️ Capital Delivery</small>
+                    <h2 class="text-info fw-bold mt-2">{{ analytics.projets_livres }}</h2>
+                    <small class="text-info">Programs completed</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                <small class="text-muted">🚀 Public ROI</small>
+                <h2 class="text-warning fw-bold mt-2">{{ analytics.roi }}</h2>
+                <small class="text-warning">Impact multiplier</small>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{{ url_for('incidents.incidents') }}" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                    <small class="text-muted">👥 Workforce Productivity</small>
+                    <h2 class="fw-bold mt-2">{{ analytics.agents_connectes }}</h2>
+                    <small class="text-success">Connected field agents</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{{ url_for('incidents.incidents') }}" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100 border-0 rounded-4 hover-card">
+                    <small class="text-muted">⚡ Mean Response Time</small>
+                    <h2 class="text-danger fw-bold mt-2">{{ analytics.temps_resolution }}</h2>
+                    <small class="text-danger">Citizen issue workflows</small>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 🌍 Governance Intelligence KPIs -->
+    <div class="row g-4 mt-1">
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm border-0 rounded-4">
+                <small class="text-muted">🌱 ESG Governance Score</small>
+                <h3 class="fw-bold mt-2">A</h3>
+                <small class="text-success">Green urban operations</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm border-0 rounded-4">
+                <small class="text-muted">😊 Citizen Trust Index</small>
+                <h3 class="fw-bold mt-2">93%</h3>
+                <small class="text-primary">Public confidence strong</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm border-0 rounded-4">
+                <small class="text-muted">🌐 Donor Readiness</small>
+                <h3 class="fw-bold mt-2">High</h3>
+                <small class="text-info">Reporting aligned</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📈 Live Trend -->
+    <div class="card mt-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">📈 Performance Trend Intelligence</h4>
+            <canvas id="analyticsChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- 🧠 Policy Signals -->
+    <div class="card mt-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">🧠 Policy & Governance Signals</h4>
+
+            <div class="alert alert-success">
+                Digital land tax collection significantly improves fiscal elasticity.
+            </div>
+
+            <div class="alert alert-info">
+                Infrastructure delivery performance exceeds regional benchmarks.
+            </div>
+
+            <div class="alert alert-warning">
+                Citizen service workflows still show road-maintenance bottlenecks.
+            </div>
+
+            <div class="alert alert-primary">
+                Data maturity now supports donor-grade impact reporting.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("{{ url_for('stats.analytics_api') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById("analyticsChart");
+
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Q1", "Q2", "Q3", "Q4"],
+                    datasets: [{
+                        label: "Governance Performance",
+                        data: [65, 74, 82, 91],
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ incident.titre }} – Centre des incidents{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 Header premium -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-danger mb-1">
+                🚨 {{ incident.titre }}
+            </h2>
+            <p class="text-muted mb-0">
+                Détail opérationnel, niveau de criticité et plan de réponse intelligent.
+            </p>
+            <small class="text-muted">
+                Dernière synchronisation : {{ incident.reported_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('incidents.incidents') }}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Retour incidents
+            </a>
+
+            <button class="btn btn-danger" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>Imprimer
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 KPI GRID -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 rounded-4 p-4 h-100">
+                <h3 class="fw-bold text-danger">{{ incident.priorite }}</h3>
+                <p class="mb-0 text-muted">Priorité</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 rounded-4 p-4 h-100">
+                <h3 class="fw-bold text-primary">{{ incident.zone }}</h3>
+                <p class="mb-0 text-muted">Zone</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 rounded-4 p-4 h-100">
+                <h3 class="fw-bold text-warning">{{ incident.statut }}</h3>
+                <p class="mb-0 text-muted">Statut</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 rounded-4 p-4 h-100">
+                <h3 class="fw-bold text-info">{{ incident.agent }}</h3>
+                <p class="mb-0 text-muted">Agent assigné</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 fiche + analyse -->
+    <div class="row g-4">
+
+        <!-- 📋 fiche opérationnelle -->
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h4 class="mb-4">📋 Fiche opérationnelle</h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">📝 Incident</small>
+                                <h5 class="mb-0">{{ incident.titre }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">📍 Zone</small>
+                                <h5 class="mb-0">{{ incident.zone }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">⚠️ Priorité</small>
+                                <h5 class="mb-0">{{ incident.priorite }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">🚦 Statut</small>
+                                <h5 class="mb-0">{{ incident.statut }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">👮 Agent</small>
+                                <h5 class="mb-0">{{ incident.agent }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-4 p-3">
+                                <small class="text-muted">🕒 Signalé le</small>
+                                <h5 class="mb-0">{{ incident.reported_at }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🧠 IA RESPONSE -->
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h4 class="mb-3">🧠 Signal IA de réponse</h4>
+
+                    {% if incident.priorite == "Critique" %}
+                        <div class="alert alert-danger">
+                            🚨 Escalade immédiate recommandée avec mobilisation de la cellule de crise.
+                        </div>
+                        <h5 class="text-danger fw-bold">SLA : 1h</h5>
+
+                    {% elif incident.priorite == "Haute" %}
+                        <div class="alert alert-warning">
+                            ⚠️ Intervention prioritaire recommandée dans les prochaines heures.
+                        </div>
+                        <h5 class="text-warning fw-bold">SLA : 4h</h5>
+
+                    {% else %}
+                        <div class="alert alert-info">
+                            ℹ️ Incident sous surveillance avec traitement standard.
+                        </div>
+                        <h5 class="text-info fw-bold">SLA : 24h</h5>
+                    {% endif %}
+
+                    <hr>
+
+                    <small class="text-muted">Indice de criticité</small>
+                    <h3 class="fw-bold text-dark">
+                        {% if incident.priorite == "Critique" %}
+                            96/100
+                        {% elif incident.priorite == "Haute" %}
+                            82/100
+                        {% else %}
+                            61/100
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🚀 timeline -->
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-body">
+            <h4 class="mb-3">🚀 Chronologie d’intervention</h4>
+            <p class="mb-2">📍 Incident détecté dans la zone {{ incident.zone }}</p>
+            <p class="mb-2">👮 Agent assigné : {{ incident.agent }}</p>
+            <p class="mb-2">⚠️ Niveau : {{ incident.priorite }}</p>
+            <p class="mb-0">🚦 Statut actuel : {{ incident.statut }}</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

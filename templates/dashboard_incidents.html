@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Incidents{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h2 class="fw-bold text-danger mb-4">🚨 Incident Command Center</h2>
+
+    {% for incident in incidents %}
+    <a href="{{ url_for('dashboard.incident_detail', incident_id=incident.id) }}"
+       class="text-decoration-none">
+        <div class="alert alert-warning">
+            {{ incident.zone }} • {{ incident.message }}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

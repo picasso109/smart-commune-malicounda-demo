@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Centre de Résilience Urbaine & Réponse Citoyenne{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 En-tête -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                🌍 Centre de Résilience Urbaine & Réponse Citoyenne
+            </h2>
+            <p class="text-muted mb-0">
+                Gestion en temps réel des incidents citoyens, coordination d’urgence,
+                intelligence des risques urbains et continuité des services.
+            </p>
+            <small class="text-muted">
+                Dernière mise à jour : {{ updated_at }}
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('incidents.export_incidents') }}"
+               class="btn btn-outline-primary px-4">
+                <i class="bi bi-download me-2"></i>Exporter le brief de crise
+            </a>
+
+            <button class="btn btn-danger px-4">
+                <i class="bi bi-broadcast-pin me-2"></i>Mode urgence
+            </button>
+
+            <button class="btn btn-outline-dark px-4">
+                <i class="bi bi-shield-check me-2"></i>Plan de continuité
+            </button>
+        </div>
+    </div>
+
+    <!-- 📊 KPI -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-danger">{{ incidents|length }}</h3>
+                <p class="mb-0 text-muted">Incidents ouverts</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-warning">
+                    {{ incidents | selectattr("priorite", "equalto", "Critique") | list | length }}
+                </h3>
+                <p class="mb-0 text-muted">Priorité critique</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-success">18</h3>
+                <p class="mb-0 text-muted">Résolus ce mois</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card text-center p-4 shadow-sm border-0 rounded-4">
+                <h3 class="fw-bold text-info">92%</h3>
+                <p class="mb-0 text-muted">Respect SLA</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌍 Continuité -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">😊 Indice de confiance citoyenne</small>
+                    <h3 class="fw-bold mt-2">91%</h3>
+                    <small class="text-success">Confiance publique stable</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">⚡ Temps moyen de réponse</small>
+                    <h3 class="fw-bold mt-2">12 min</h3>
+                    <small class="text-primary">Amélioration de 18%</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <small class="text-muted">🌧️ Préparation aux chocs climatiques</small>
+                    <h3 class="fw-bold mt-2">Élevée</h3>
+                    <small class="text-info">Scénario inondation actif</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔍 Recherche -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <input id="incidentSearch"
+                   type="text"
+                   class="form-control rounded-pill px-4"
+                   placeholder="🔍 Rechercher incident, zone, priorité, équipe...">
+        </div>
+    </div>
+
+    <!-- 🚨 Grille incidents -->
+    <div class="row g-4" id="incidentGrid">
+        {% for incident in incidents %}
+        <div class="col-md-6 col-xl-4 incident-card">
+            <div class="card h-100 shadow-sm border-0 rounded-4 hover-card">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold mb-0">{{ incident.titre }}</h5>
+
+                        {% if incident.priorite == "Critique" %}
+                            <span class="badge bg-danger rounded-pill">Critique</span>
+                        {% elif incident.priorite == "Haute" %}
+                            <span class="badge bg-warning text-dark rounded-pill">Haute</span>
+                        {% else %}
+                            <span class="badge bg-info rounded-pill">Modérée</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="mb-2"><strong>📍 Zone :</strong> {{ incident.zone }}</p>
+                    <p class="mb-2"><strong>⚡ Priorité :</strong> {{ incident.priorite }}</p>
+                    <p class="mb-2"><strong>👷 Agent :</strong> {{ incident.agent }}</p>
+                    <p class="mb-2"><strong>🕒 Signalé :</strong> {{ incident.reported_at }}</p>
+                    <p class="mb-3"><strong>📌 Statut :</strong> {{ incident.statut }}</p>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{{ url_for('incidents.incident_detail', incident_id=incident.id) }}"
+                           class="btn btn-outline-primary btn-sm flex-fill">
+                            👁️ Voir
+                        </a>
+
+                        <a href="{{ url_for('incidents.incident_detail', incident_id=incident.id) }}"
+                           class="btn btn-danger btn-sm flex-fill">
+                            🚨 Répondre
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 🧠 Signaux IA -->
+    <div class="card mt-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h4 class="mb-3">🧠 Signaux d’intelligence urbaine</h4>
+
+            {% for incident in incidents %}
+            <a href="{{ url_for('incidents.incident_detail', incident_id=incident.id) }}"
+               class="text-decoration-none">
+                <div class="alert
+                    {% if incident.priorite == 'Critique' %}
+                        alert-danger
+                    {% elif incident.priorite == 'Haute' %}
+                        alert-warning
+                    {% else %}
+                        alert-info
+                    {% endif %}">
+                    <strong>{{ incident.titre }}</strong>
+                    • {{ incident.zone }}
+                    • {{ incident.statut }}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const search = document.getElementById("incidentSearch");
+    const cards = document.querySelectorAll(".incident-card");
+
+    search.addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+
+        cards.forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(value)
+                ? ""
+                : "none";
+        });
+    });
+});
+</script>
+{% endblock %}

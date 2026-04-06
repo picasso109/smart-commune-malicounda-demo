@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Executive KPIs{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- 🌍 Header -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                📊 Executive KPI Intelligence
+            </h2>
+            <p class="text-muted mb-0">
+                Vue synthétique des indicateurs stratégiques de la commune.
+            </p>
+            {% if updated_at %}
+            <small class="text-muted">
+                Dernière mise à jour : {{ updated_at }}
+            </small>
+            {% endif %}
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('reports.mayor_report') }}"
+               class="btn btn-outline-dark">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Rapport PDF
+            </a>
+
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Retour cockpit
+            </a>
+        </div>
+    </div>
+
+    <!-- 📊 KPI GRID -->
+    <div class="row g-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-card">
+                <small class="text-muted">💰 Recettes</small>
+                <h2 class="fw-bold text-success mt-2">{{ stats.recettes }}</h2>
+                <small class="text-success">Performance budgétaire</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-card">
+                <small class="text-muted">🗺️ Parcelles</small>
+                <h2 class="fw-bold text-info mt-2">{{ stats.parcelles }}</h2>
+                <small class="text-info">Cadastre sécurisé</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-card">
+                <small class="text-muted">🏗️ Projets</small>
+                <h2 class="fw-bold text-primary mt-2">{{ stats.projets }}</h2>
+                <small class="text-primary">Portefeuille actif</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-card">
+                <small class="text-muted">⚠️ Litiges</small>
+                <h2 class="fw-bold text-danger mt-2">{{ stats.litiges }}</h2>
+                <small class="text-danger">Sous surveillance</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📈 Strategic Insight -->
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-body">
+            <h4 class="mb-3">🧠 Lecture stratégique</h4>
+
+            <div class="alert alert-success">
+                Les recettes communales maintiennent une dynamique positive avec une bonne élasticité fiscale.
+            </div>
+
+            <div class="alert alert-info">
+                Le portefeuille foncier sécurisé soutient la croissance des investissements.
+            </div>
+
+            <div class="alert alert-warning">
+                Certains projets structurants nécessitent un suivi renforcé sur les délais.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.25s ease;
+}
+.hover-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+</style>
+{% endblock %}

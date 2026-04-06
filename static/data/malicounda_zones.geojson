@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pointe Sarène",
+        "risk": "Critique",
+        "score": 92,
+        "capex": "1.2 Md FCFA",
+        "service": "Service Foncier"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-16.99, 14.40],
+          [-16.96, 14.40],
+          [-16.96, 14.43],
+          [-16.99, 14.43],
+          [-16.99, 14.40]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Falokh",
+        "risk": "Faible",
+        "score": 18,
+        "capex": "450 M FCFA",
+        "service": "Cadastre"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-16.94, 14.45],
+          [-16.91, 14.45],
+          [-16.91, 14.47],
+          [-16.94, 14.47],
+          [-16.94, 14.45]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Madinatou Salam",
+        "risk": "Moyen",
+        "score": 56,
+        "capex": "800 M FCFA",
+        "service": "PMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-16.96, 14.43],
+          [-16.93, 14.43],
+          [-16.93, 14.45],
+          [-16.96, 14.45],
+          [-16.96, 14.43]
+        ]]
+      }
+    }
+  ]
+}

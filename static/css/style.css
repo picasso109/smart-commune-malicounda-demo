@@ -1,0 +1,417 @@
+/* =========================================
+   🌍 SMART COMMUNE GLOBAL GOVTECH DESIGN SYSTEM
+   WCAG • Enterprise • GovTech • 4K Ready
+   + 📺 TV MODE + 🎤 PRESENTATION MODE
+========================================= */
+
+:root {
+    /* 🎨 Color Tokens */
+    --primary: #0d6efd;
+    --primary-dark: #0a58ca;
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+
+    /* 🌫️ Surfaces */
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-soft: rgba(255, 255, 255, 0.88);
+    --light-bg: #f6f9ff;
+
+    /* 🖋️ Typography */
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --text-soft: #94a3b8;
+
+    /* 📐 Radius */
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+
+    /* 📏 Spacing */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+
+    /* 🌑 Shadows */
+    --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 18px 48px rgba(15, 23, 42, 0.12);
+
+    /* 🎞️ Motion */
+    --transition-fast: 0.25s ease;
+    --transition-smooth: 0.35s ease;
+
+    /* 📺 TV MODE */
+    --tv-bg: #06111f;
+    --tv-surface: rgba(10, 25, 47, 0.88);
+    --tv-border: rgba(255,255,255,0.08);
+    --tv-text: #e6eef8;
+    --tv-muted: #9fb3c8;
+}
+
+/* =========================
+   🌍 GLOBAL FOUNDATION
+========================= */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Inter", "Poppins", Arial, sans-serif;
+    background:
+        radial-gradient(circle at top right, rgba(13,110,253,0.06), transparent 28%),
+        linear-gradient(135deg, #eef4ff, #f8fbff);
+    color: var(--text-dark);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* =========================
+   🎤 PRESENTATION MODE
+========================= */
+body.presentation-mode {
+    background:
+        radial-gradient(circle at top right, rgba(13,110,253,0.06), transparent 28%),
+        linear-gradient(135deg, #eef4ff, #f8fbff);
+    color: #1f2937;
+}
+
+body.presentation-mode .card,
+body.presentation-mode .content-card {
+    background: rgba(255,255,255,0.96) !important;
+    border: 1px solid rgba(13,110,253,0.08) !important;
+    color: #1f2937 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    backdrop-filter: blur(10px);
+}
+
+body.presentation-mode h1,
+body.presentation-mode h2,
+body.presentation-mode h3,
+body.presentation-mode h4,
+body.presentation-mode h5,
+body.presentation-mode h6 {
+    color: #0d6efd !important;
+}
+
+body.presentation-mode .text-muted,
+body.presentation-mode small {
+    color: #6b7280 !important;
+}
+
+body.presentation-mode .sidebar {
+    background: linear-gradient(180deg, #0d6efd 0%, #0a58ca 55%, #198754 100%);
+}
+
+body.presentation-mode .metric-value,
+body.presentation-mode .kpi-value {
+    color: #0d6efd !important;
+}
+
+/* =========================
+   📺 TV MODE
+========================= */
+body.tv-mode {
+    background:
+        radial-gradient(circle at top right, rgba(13,110,253,0.18), transparent 30%),
+        linear-gradient(135deg, #06111f, #0b1f38);
+    color: var(--tv-text);
+    font-size: 18px;
+}
+
+body.tv-mode .card,
+body.tv-mode .content-card {
+    background: var(--tv-surface) !important;
+    border: 1px solid var(--tv-border) !important;
+    color: var(--tv-text);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    backdrop-filter: blur(14px);
+}
+
+body.tv-mode h1,
+body.tv-mode h2,
+body.tv-mode h3,
+body.tv-mode h4,
+body.tv-mode h5,
+body.tv-mode h6 {
+    color: #ffffff;
+}
+
+body.tv-mode .text-muted,
+body.tv-mode small {
+    color: var(--tv-muted) !important;
+}
+
+body.tv-mode .metric-value,
+body.tv-mode .kpi-value {
+    font-size: clamp(2.8rem, 4vw, 4.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+/* =========================
+   🏛️ BRANDING LOGO
+========================= */
+.smart-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: white;
+    padding: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.smart-logo:hover {
+    transform: scale(1.05);
+}
+
+.smart-logo-lg {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    border-radius: 18px;
+    background: white;
+    padding: 6px;
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   🔤 TYPOGRAPHY
+========================= */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-dark);
+}
+
+small,
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* =========================
+   🧱 CARDS
+========================= */
+.card {
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast);
+    overflow: hidden;
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+.btn {
+    border-radius: var(--radius-pill) !important;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    min-height: 44px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(13,110,253,0.18) !important;
+}
+
+/* =========================
+   📊 TABLES
+========================= */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.table thead th {
+    background: #f8fafc;
+    color: var(--text-dark);
+    border: none;
+    font-weight: 700;
+    padding: 16px;
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    background: white;
+    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-sm);
+    transition: transform var(--transition-fast);
+}
+
+.table tbody tr:hover {
+    transform: scale(1.004);
+}
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border: none;
+}
+
+/* =========================
+   📈 KPI VALUES
+========================= */
+.metric-value,
+.kpi-value {
+    font-size: clamp(1.8rem, 2vw, 2.4rem);
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+/* =========================
+   🚨 ALERTS
+========================= */
+.alert {
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    padding: 16px 18px;
+}
+
+/* =========================
+   📊 PROGRESS
+========================= */
+.progress {
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    background: #e9ecef;
+    height: 12px;
+}
+
+.progress-bar {
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+}
+
+/* =========================
+   🧾 BADGES
+========================= */
+.badge {
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: var(--radius-pill);
+}
+
+/* =========================
+   📍 MAP / GIS
+========================= */
+#map {
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   📝 FORMS
+========================= */
+.form-control,
+.form-select {
+    border-radius: var(--radius-pill);
+    border: 1px solid #dee2e6;
+    min-height: 46px;
+}
+
+/* =========================
+   🖥️ LARGE DISPLAYS / 4K
+========================= */
+@media (min-width: 1800px) {
+    body {
+        font-size: 18px;
+    }
+
+    .container-fluid {
+        max-width: 1800px;
+        margin: auto;
+    }
+
+    .smart-logo {
+        width: 52px;
+        height: 52px;
+    }
+}
+
+@media (min-width: 2200px) {
+    body.tv-mode {
+        font-size: 24px;
+    }
+
+    body.tv-mode .container-fluid {
+        max-width: 2400px;
+    }
+
+    body.tv-mode .metric-value,
+    body.tv-mode .kpi-value {
+        font-size: 5.5rem;
+    }
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+
+    .card {
+        border-radius: var(--radius-md) !important;
+    }
+
+    .table-responsive {
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    h2 {
+        font-size: 1.45rem;
+    }
+
+    .btn {
+        min-height: 42px;
+    }
+
+    .smart-logo {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+/* =========================
+   ♿ REDUCED MOTION
+========================= */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
