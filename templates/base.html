@@ -4,8 +4,6 @@
 SMART COMMUNE COCKPIT – MALICOUNDA
 Version: DEMO MAYOR PRESENTATION 2026
 Auteur: DJIBRIL MBAYE
-Contact: picambaye@gmail.com
-Licence: Proprietary Demo License
 ==================================================
 -->
 <html lang="fr" data-theme="light">
@@ -53,6 +51,16 @@ Licence: Proprietary Demo License
             --radius-xl: 22px;
         }
 
+        body {
+            font-family: "Inter", "Poppins", sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(13,110,253,0.08), transparent 30%),
+                linear-gradient(135deg, #eef4ff, #f7fbff);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #1f2937;
+        }
+
         .smart-logo {
             width: 58px;
             height: 58px;
@@ -65,10 +73,10 @@ Licence: Proprietary Demo License
         }
 
         .smart-logo:hover {
-            transform: scale(1.08);
+            transform: scale(1.05);
         }
 
-        /* 🚀 SPLASH ULTRA PREMIUM */
+        /* 🚀 SPLASH RAPIDE */
         #app-loader {
             position: fixed;
             inset: 0;
@@ -80,7 +88,7 @@ Licence: Proprietary Demo License
             background:
                 radial-gradient(circle at center, rgba(13,110,253,0.08), transparent 45%),
                 linear-gradient(135deg, #f8fbff, #eef4ff);
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
         }
 
         #app-loader.hide {
@@ -94,81 +102,51 @@ Licence: Proprietary Demo License
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 240px;
-            height: 240px;
+            width: 170px;
+            height: 170px;
         }
 
         .loader-ring {
             position: absolute;
-            width: 240px;
-            height: 240px;
-            border: 5px solid rgba(13,110,253,0.12);
-            border-top: 5px solid #0d6efd;
+            width: 170px;
+            height: 170px;
+            border: 4px solid rgba(13,110,253,0.12);
+            border-top: 4px solid #0d6efd;
             border-radius: 50%;
-            animation: spinRing 1.4s linear infinite;
+            animation: spinRing 1s linear infinite;
         }
 
         .loader-logo {
-            width: 170px;
-            height: 170px;
+            width: 110px;
+            height: 110px;
             object-fit: contain;
-            border-radius: 32px;
+            border-radius: 24px;
             background: #ffffff;
-            padding: 16px;
+            padding: 12px;
             box-shadow:
                 0 20px 60px rgba(13,110,253,0.18),
                 0 10px 25px rgba(0,0,0,0.08);
             z-index: 2;
-            animation: pulseLogo 1.6s ease-in-out infinite;
         }
 
         .loader-text {
-            margin-top: 28px;
-            font-size: 1.6rem;
+            margin-top: 22px;
+            font-size: 1.25rem;
             font-weight: 800;
             color: #0d6efd;
             text-align: center;
         }
 
         .loader-subtext {
-            margin-top: 8px;
-            font-size: 1rem;
+            margin-top: 6px;
+            font-size: 0.95rem;
             color: #64748b;
             font-weight: 600;
-        }
-
-        .loader-progress {
-            width: 320px;
-            height: 12px;
-            background: rgba(13,110,253,0.12);
-            border-radius: 999px;
-            overflow: hidden;
-            margin-top: 22px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        .loader-progress-bar {
-            width: 0%;
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #0d6efd, #198754);
-        }
-
-        .loader-percent {
-            margin-top: 10px;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #0d6efd;
         }
 
         @keyframes spinRing {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulseLogo {
-            0%,100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
         }
 
         .top-navbar {
@@ -231,12 +209,29 @@ Licence: Proprietary Demo License
             color: #6b7280;
             font-size: 0.9rem;
         }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content,
+            .footer-global {
+                margin-left: 0;
+                padding: 95px 14px 24px;
+            }
+
+            .content-card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+        }
     </style>
 </head>
 
 <body class="presentation-mode">
 
-    <!-- 🚀 Splash Screen -->
+    <!-- 🚀 Splash rapide sans 100% -->
     <div id="app-loader">
         <div class="loader-wrapper">
             <div class="loader-ring"></div>
@@ -247,14 +242,8 @@ Licence: Proprietary Demo License
 
         <div class="loader-text">Smart Commune Malicounda</div>
         <div class="loader-subtext">
-            Gouvernance intelligente • Initialisation sécurisée...
+            Gouvernance intelligente • Chargement rapide...
         </div>
-
-        <div class="loader-progress">
-            <div class="loader-progress-bar" id="loaderBar"></div>
-        </div>
-
-        <div class="loader-percent" id="loaderPercent">0%</div>
     </div>
 
     <!-- 🌐 Navbar -->
@@ -297,7 +286,7 @@ Licence: Proprietary Demo License
         </div>
     </main>
 
-    <!-- 🌍 Footer signé -->
+    <!-- 🌍 Footer -->
     <footer class="footer-global">
         © 2026 Smart Commune Malicounda • Version Démo Sécurisée •
         Conçu et développé par <strong>DJIBRIL MBAYE</strong>
@@ -315,31 +304,15 @@ Licence: Proprietary Demo License
     <script>
         window.addEventListener("load", () => {
             const loader = document.getElementById("app-loader");
-            const bar = document.getElementById("loaderBar");
-            const percent = document.getElementById("loaderPercent");
 
-            let progress = 0;
-            const totalDuration = 6000;
-            const intervalTime = 60;
-            const step = 100 / (totalDuration / intervalTime);
-
-            const interval = setInterval(() => {
-                progress += step;
-                if (progress > 100) progress = 100;
-
-                bar.style.width = progress + "%";
-                percent.textContent = Math.floor(progress) + "%";
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => loader.classList.add("hide"), 200);
-                }
-            }, intervalTime);
+            setTimeout(() => {
+                loader.classList.add("hide");
+            }, 700);
 
             if ("serviceWorker" in navigator) {
                 navigator.serviceWorker
                     .register("{{ url_for('static', filename='sw.js') }}")
-                    .catch(err => console.log("SW erreur:", err));
+                    .catch(() => {});
             }
         });
     </script>
